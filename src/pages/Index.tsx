@@ -48,7 +48,7 @@ const Index = () => {
             <Link to="/learner">
               <Button size="lg" className="gap-2 shadow-button hover:shadow-lg transition-all">
                 <BookOpen className="h-5 w-5" />
-                I'm a Learner (Grade 9+)
+                I'm a Learner (Grade 9/10)
               </Button>
             </Link>
             <Link to="/student">
