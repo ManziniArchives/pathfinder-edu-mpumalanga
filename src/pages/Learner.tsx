@@ -90,7 +90,7 @@ const Learner = () => {
               Let's Find Your <span className="bg-gradient-primary bg-clip-text text-transparent">Perfect Path</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Enter your current grade and subject marks. Our AI will recommend whether to continue to Grade 12 or explore TVET options.
+              Enter your current grade (9/10) and subject marks. Our AI will recommend whether to continue until Grade 12 or explore TVET options.
             </p>
           </div>
 
