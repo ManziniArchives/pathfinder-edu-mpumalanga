@@ -106,7 +106,6 @@ const Learner = () => {
                   <SelectContent>
                     <SelectItem value="9">Grade 9</SelectItem>
                     <SelectItem value="10">Grade 10</SelectItem>
-                    <SelectItem value="11">Grade 11</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
