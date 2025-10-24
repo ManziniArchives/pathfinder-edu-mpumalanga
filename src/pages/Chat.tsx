@@ -19,7 +19,7 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello! I'm EduBot, your educational guidance assistant. I can help you with questions about courses, careers, and educational pathways in South Africa. What would you like to know?"
+      content: "Hello! I'm Sizwe The Bot, your educational guidance assistant. I can help you with questions about courses, careers, and educational pathways in South Africa. What would you like to know?"
     }
   ]);
   const [input, setInput] = useState("");
