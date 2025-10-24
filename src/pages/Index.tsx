@@ -12,7 +12,7 @@ const Index = () => {
             <div className="flex items-center gap-2">
               <GraduationCap className="h-8 w-8 text-primary" />
               <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                PathFinder Mpumalanga
+            Mpumalanga AI Career Bridge
               </span>
             </div>
             <div className="flex items-center gap-4">
@@ -108,7 +108,7 @@ const Index = () => {
           <Link to="/chat">
             <Button size="lg" variant="secondary" className="gap-2">
               <MessageCircle className="h-5 w-5" />
-              Start Chatting with EduBot
+              Start Chatting with Sizwe The AI BOT
             </Button>
           </Link>
         </div>
@@ -117,7 +117,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/50 py-8">
         <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>&copy; 2025 PathFinder Mpumalanga. Empowering youth through education.</p>
+          <p>&copy; 2025 Mpumalanga AI Career Bridge. Empowering youth through education.</p>
         </div>
       </footer>
     </div>
