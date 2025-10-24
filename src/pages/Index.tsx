@@ -25,7 +25,7 @@ const Index = () => {
               <Link to="/chat">
                 <Button variant="outline" className="gap-2">
                   <MessageCircle className="h-4 w-4" />
-                  EduBot
+                  Sizwe The AI Bot
                 </Button>
               </Link>
             </div>
@@ -78,9 +78,9 @@ const Index = () => {
             <div className="h-12 w-12 rounded-lg bg-gradient-secondary flex items-center justify-center mb-4">
               <MessageCircle className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">24/7 EduBot Support</h3>
+            <h3 className="text-xl font-semibold mb-2">24/7 Sizwe Bot Support</h3>
             <p className="text-muted-foreground">
-              Get instant answers to your education and career questions. EduBot is trained on South African education data.
+              Get instant answers to your education and career questions. Sizwe is trained on South African education data.
             </p>
           </div>
           
