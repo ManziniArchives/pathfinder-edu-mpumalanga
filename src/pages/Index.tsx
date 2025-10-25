@@ -12,15 +12,15 @@ const Index = () => {
             <div className="flex items-center gap-2">
               <GraduationCap className="h-8 w-8 text-primary" />
               <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Mpumalanga AI Career Bridge
+            Mpumalanga AI Career Guide
               </span>
             </div>
             <div className="flex items-center gap-4">
               <Link to="/learner">
-                <Button variant="ghost">For Learners</Button>
+                <Button variant="ghost">For Learners(9/10)</Button>
               </Link>
               <Link to="/student">
-                <Button variant="ghost">For Students</Button>
+                <Button variant="ghost">For Learners(11/12)</Button>
               </Link>
               <Link to="/chat">
                 <Button variant="outline" className="gap-2">
@@ -37,8 +37,8 @@ const Index = () => {
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center space-y-6">
           <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-            Your Journey to 
-            <span className="bg-gradient-hero bg-clip-text text-transparent"> Educational Success</span>
+            Empowering Learners To Explore Careers Through
+            <span className="bg-gradient-hero bg-clip-text text-transparent"> Artificial Intelligence</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             AI-powered guidance for South African learners and students. 
@@ -117,7 +117,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 bg-card/50 py-8">
         <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>&copy; 2025 Mpumalanga AI Career Bridge. Empowering youth through education.</p>
+          <p>&copy; 2025 Mpumalanga AI Career Guide. Empowering youth through education and AI.</p>
         </div>
       </footer>
     </div>
