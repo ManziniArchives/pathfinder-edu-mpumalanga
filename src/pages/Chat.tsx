@@ -80,7 +80,7 @@ const Chat = () => {
             </Button>
             <div className="flex items-center gap-2">
               <Bot className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold">EduBot - AI Assistant</span>
+              <span className="text-xl font-bold">Sizwe Bot - The AI Assistant</span>
             </div>
           </div>
         </div>
