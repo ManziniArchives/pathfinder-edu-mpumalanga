@@ -22,7 +22,19 @@ const Student = () => {
   const [marks, setMarks] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
+  const limits = grade && (grade === "11" || grade === "12") ? { min: 7, max: 8 } : { min: 7, max: 8 };
+  const filledCount = Object.values(marks).filter(m => m !== "").length;
+  
   const handleMarkChange = (subject: string, value: string) => {
+    const isAddingValue = (marks[subject] ?? "") === "" && value !== "";
+    if (isAddingValue && filledCount >= limits.max) {
+      toast({
+        title: "Subject limit reached",
+        description: "Grades 11–12 allow 7 or 8 subjects",
+        variant: "destructive"
+      });
+      return;
+    }
     setMarks(prev => ({ ...prev, [subject]: value }));
   };
 
@@ -39,10 +51,10 @@ const Student = () => {
     }
 
     const filledMarks = Object.keys(marks).filter(subject => marks[subject] !== "");
-    if (filledMarks.length < 4) {
+    if (filledMarks.length < limits.min || filledMarks.length > limits.max) {
       toast({
-        title: "More Marks Needed",
-        description: "Please enter marks for at least 4 subjects",
+        title: "Invalid number of subjects",
+        description: "Enter marks for exactly 7 or 8 subjects",
         variant: "destructive"
       });
       return;
@@ -113,7 +125,7 @@ const Student = () => {
               {/* Subject Marks */}
               <div className="space-y-4">
                 <Label className="text-base font-semibold">Subject Marks (%)</Label>
-                <p className="text-sm text-muted-foreground">Enter your most recent marks (at least 4 subjects)</p>
+                <p className="text-sm text-muted-foreground">Enter your most recent marks (exactly 7 or 8 subjects)</p>
                 <div className="grid md:grid-cols-2 gap-4">
                   {subjects.map(subject => (
                     <div key={subject} className="space-y-2">
@@ -127,6 +139,7 @@ const Student = () => {
                         value={marks[subject] || ""}
                         onChange={(e) => handleMarkChange(subject, e.target.value)}
                         className="transition-all focus:ring-2 focus:ring-primary"
+                        disabled={isLoading || (filledCount >= limits.max && !marks[subject])}
                       />
                     </div>
                   ))}

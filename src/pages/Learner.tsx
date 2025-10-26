@@ -21,7 +21,19 @@ const Learner = () => {
   const [marks, setMarks] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
+  const limits = grade === "9" ? { min: 9, max: 9 } : grade === "10" ? { min: 7, max: 8 } : null;
+  const filledCount = Object.values(marks).filter(m => m !== "").length;
+  
   const handleMarkChange = (subject: string, value: string) => {
+    const isAddingValue = (marks[subject] ?? "") === "" && value !== "";
+    if (limits && isAddingValue && filledCount >= limits.max) {
+      toast({
+        title: "Subject limit reached",
+        description: grade === "9" ? "Grade 9 requires exactly 9 subjects" : "Grade 10 allows 7 or 8 subjects",
+        variant: "destructive"
+      });
+      return;
+    }
     setMarks(prev => ({ ...prev, [subject]: value }));
   };
 
@@ -38,10 +50,10 @@ const Learner = () => {
     }
 
     const filledMarks = Object.keys(marks).filter(subject => marks[subject] !== "");
-    if (filledMarks.length < 3) {
+    if (!limits || filledMarks.length < limits.min || filledMarks.length > limits.max) {
       toast({
-        title: "More Marks Needed",
-        description: "Please enter marks for at least 3 subjects",
+        title: "Invalid number of subjects",
+        description: grade === "9" ? "Enter marks for exactly 9 subjects" : "Enter marks for 7 or 8 subjects",
         variant: "destructive"
       });
       return;
@@ -90,7 +102,9 @@ const Learner = () => {
               Let's Find Your <span className="bg-gradient-primary bg-clip-text text-transparent">Perfect Path</span>
             </h1>
             <p className="text-lg text-muted-foreground">
-              Enter your current grade (9/10) and subject marks. Our AI will recommend whether to continue until Grade 12 or explore TVET options.
+              {grade === "9" && "Enter marks for exactly 9 subjects. Our AI will recommend whether to continue until Grade 12 or explore TVET options."}
+              {grade === "10" && "Enter marks for 7 or 8 subjects. Our AI will recommend whether to continue until Grade 12 or explore TVET options."}
+              {!grade && "Enter your current grade (9/10) and subject marks. Our AI will recommend whether to continue until Grade 12 or explore TVET options."}
             </p>
           </div>
 
@@ -127,6 +141,7 @@ const Learner = () => {
                         value={marks[subject] || ""}
                         onChange={(e) => handleMarkChange(subject, e.target.value)}
                         className="transition-all focus:ring-2 focus:ring-primary"
+                        disabled={isLoading || (limits ? (filledCount >= limits.max && !marks[subject]) : false)}
                       />
                     </div>
                   ))}
