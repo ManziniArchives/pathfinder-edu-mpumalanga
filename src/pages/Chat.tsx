@@ -4,13 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { GraduationCap, ArrowLeft, Send, Bot, User } from "lucide-react";
+import { GraduationCap, ArrowLeft, Send, Bot, User, Upload, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { VideoPresentation } from "@/components/VideoPresentation";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
+  videoData?: {
+    title: string;
+    summary: string;
+    keyPoints: string[];
+    difficulty: string;
+    audioUrl: string;
+  };
 }
 
 const Chat = () => {
@@ -19,12 +27,14 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello! I'm Sizwe The Bot, your educational guidance assistant. I can help you with questions about courses, careers, and educational pathways in South Africa. What would you like to know?"
+      content: "Hello! I'm Sizwe The Bot, your educational guidance assistant. I can help you with questions about courses, careers, and educational pathways in South Africa. You can also upload your study documents and I'll create a summary video to help you understand the content better!"
     }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isProcessingDocument, setIsProcessingDocument] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -69,6 +79,79 @@ const Chat = () => {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsProcessingDocument(true);
+    
+    const userMessage: Message = { 
+      role: "user", 
+      content: `📄 Uploaded document: ${file.name}` 
+    };
+    setMessages(prev => [...prev, userMessage]);
+
+    try {
+      // Step 1: Process document and get summary
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const { data: summaryData, error: summaryError } = await supabase.functions.invoke(
+        "process-document",
+        {
+          body: formData,
+        }
+      );
+
+      if (summaryError) throw summaryError;
+
+      // Step 2: Generate narration audio
+      const { data: audioData, error: audioError } = await supabase.functions.invoke(
+        "generate-narration",
+        {
+          body: { text: summaryData.summary }
+        }
+      );
+
+      if (audioError) throw audioError;
+
+      // Step 3: Create video presentation message
+      const audioUrl = `data:audio/mp3;base64,${audioData.audioContent}`;
+      
+      const videoMessage: Message = {
+        role: "assistant",
+        content: "I've created a summary video for your document. Press play to watch!",
+        videoData: {
+          title: summaryData.title,
+          summary: summaryData.summary,
+          keyPoints: summaryData.keyPoints || [],
+          difficulty: summaryData.difficulty,
+          audioUrl: audioUrl
+        }
+      };
+
+      setMessages(prev => [...prev, videoMessage]);
+
+      toast({
+        title: "Success",
+        description: "Your study video is ready!",
+      });
+
+    } catch (error: any) {
+      console.error("Document processing error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to process document. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessingDocument(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-subtle flex flex-col">
       {/* Navigation */}
@@ -103,14 +186,25 @@ const Chat = () => {
                     </div>
                   )}
                   
-                  <div
-                    className={`rounded-xl px-4 py-3 max-w-[80%] ${
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
-                    }`}
-                  >
-                    <p className="whitespace-pre-wrap">{message.content}</p>
+                  <div className={`max-w-[80%] ${message.role === "user" ? "" : "w-full"}`}>
+                    {message.videoData ? (
+                      <div className="space-y-3">
+                        <div className="rounded-xl px-4 py-3 bg-muted">
+                          <p className="whitespace-pre-wrap">{message.content}</p>
+                        </div>
+                        <VideoPresentation {...message.videoData} />
+                      </div>
+                    ) : (
+                      <div
+                        className={`rounded-xl px-4 py-3 ${
+                          message.role === "user"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted"
+                        }`}
+                      >
+                        <p className="whitespace-pre-wrap">{message.content}</p>
+                      </div>
+                    )}
                   </div>
 
                   {message.role === "user" && (
@@ -121,17 +215,24 @@ const Chat = () => {
                 </div>
               ))}
               
-              {isLoading && (
+              {(isLoading || isProcessingDocument) && (
                 <div className="flex gap-3">
                   <div className="h-8 w-8 rounded-full bg-gradient-primary flex items-center justify-center flex-shrink-0">
                     <Bot className="h-5 w-5 text-white" />
                   </div>
                   <div className="rounded-xl px-4 py-3 bg-muted">
-                    <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                    </div>
+                    {isProcessingDocument ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span className="text-sm">Processing document and generating video...</span>
+                      </div>
+                    ) : (
+                      <div className="flex gap-1">
+                        <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -141,14 +242,32 @@ const Chat = () => {
           {/* Input Form */}
           <form onSubmit={handleSubmit} className="border-t border-border/50 p-4 bg-background/50">
             <div className="flex gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx,.txt"
+                onChange={handleFileUpload}
+                className="hidden"
+                disabled={isProcessingDocument}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isProcessingDocument}
+                title="Upload document for video summary"
+              >
+                <Upload className="h-4 w-4" />
+              </Button>
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask me about courses, careers, or education..."
-                disabled={isLoading}
+                disabled={isLoading || isProcessingDocument}
                 className="flex-1"
               />
-              <Button type="submit" disabled={isLoading || !input.trim()} className="gap-2">
+              <Button type="submit" disabled={isLoading || isProcessingDocument || !input.trim()} className="gap-2">
                 <Send className="h-4 w-4" />
                 Send
               </Button>
