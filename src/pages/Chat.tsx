@@ -105,11 +105,20 @@ const Chat = () => {
 
       if (summaryError) throw summaryError;
 
+      // Parse JSON from markdown if needed
+      let parsedData = summaryData;
+      if (typeof summaryData.summary === 'string' && summaryData.summary.includes('```json')) {
+        const jsonMatch = summaryData.summary.match(/```json\n([\s\S]*?)\n```/);
+        if (jsonMatch) {
+          parsedData = JSON.parse(jsonMatch[1]);
+        }
+      }
+
       // Step 2: Generate narration audio
       const { data: audioData, error: audioError } = await supabase.functions.invoke(
         "generate-narration",
         {
-          body: { text: summaryData.summary }
+          body: { text: parsedData.summary }
         }
       );
 
@@ -122,10 +131,10 @@ const Chat = () => {
         role: "assistant",
         content: "I've created a summary video for your document. Press play to watch!",
         videoData: {
-          title: summaryData.title,
-          summary: summaryData.summary,
-          keyPoints: summaryData.keyPoints || [],
-          difficulty: summaryData.difficulty,
+          title: parsedData.title,
+          summary: parsedData.summary,
+          keyPoints: parsedData.keyPoints || [],
+          difficulty: parsedData.difficulty,
           audioUrl: audioUrl
         }
       };
