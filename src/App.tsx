@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Learner from "./pages/Learner";
 import Student from "./pages/Student";
 import Chat from "./pages/Chat";
+import VoiceChat from "./pages/VoiceChat";
 import LearnerResults from "./pages/LearnerResults";
 import StudentResults from "./pages/StudentResults";
 import NotFound from "./pages/NotFound";
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/learner" element={<Learner />} />
           <Route path="/student" element={<Student />} />
           <Route path="/chat" element={<Chat />} />
+          <Route path="/voice-chat" element={<VoiceChat />} />
           <Route path="/learner-results" element={<LearnerResults />} />
           <Route path="/student-results" element={<StudentResults />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

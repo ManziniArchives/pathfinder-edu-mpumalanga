@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Target, MessageCircle, TrendingUp, BookOpen, Award } from "lucide-react";
+import { GraduationCap, Target, MessageCircle, TrendingUp, BookOpen, Award, Mic } from "lucide-react";
 
 const Index = () => {
   return (
@@ -21,6 +21,12 @@ const Index = () => {
               </Link>
               <Link to="/student">
                 <Button variant="ghost">For Learners(11/12)</Button>
+              </Link>
+              <Link to="/voice-chat">
+                <Button variant="outline" className="gap-2">
+                  <Mic className="h-4 w-4" />
+                  Voice Tutor
+                </Button>
               </Link>
               <Link to="/chat">
                 <Button variant="outline" className="gap-2">
@@ -63,7 +69,22 @@ const Index = () => {
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-20">
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-4 gap-8">
+          <div className="bg-gradient-to-br from-primary to-primary/80 rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all border border-primary/20 text-white">
+            <div className="h-12 w-12 rounded-lg bg-white/20 backdrop-blur flex items-center justify-center mb-4">
+              <Mic className="h-6 w-6 text-white" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Voice AI Tutor ✨</h3>
+            <p className="text-white/90 mb-4">
+              Talk naturally with Sizwe! Get instant help with homework, exam prep, and understanding concepts - just like having a real tutor.
+            </p>
+            <Link to="/voice-chat">
+              <Button variant="secondary" size="sm" className="w-full">
+                Try Voice Chat
+              </Button>
+            </Link>
+          </div>
+          
           <div className="bg-card rounded-xl p-6 shadow-card hover:shadow-card-hover transition-all border border-border/50">
             <div className="h-12 w-12 rounded-lg bg-gradient-primary flex items-center justify-center mb-4">
               <Target className="h-6 w-6 text-white" />
